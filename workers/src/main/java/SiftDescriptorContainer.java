@@ -1,4 +1,4 @@
-package eCP.Java;
+package main.java;
 
 import org.apache.hadoop.io.Writable;
 
