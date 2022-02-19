@@ -305,3 +305,5 @@ $RECYCLE.BIN/
 
 workers/project
 workers/.bsp
+master/project
+master/.bsp
