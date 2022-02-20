@@ -1,3 +1,5 @@
+package eCP.Java;
+
 import org.apache.hadoop.io.Writable;
 
 import java.io.DataInput;

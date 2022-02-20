@@ -2,6 +2,8 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.hadoop.io.IntWritable
 
+import eCP.Java.SiftDescriptorContainer
+
 object DataLoader {
 
     /** 

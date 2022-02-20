@@ -1,3 +1,5 @@
+import eCP.Java.SiftDescriptorContainer
+
 object EuclideanDistance {
     /* calc. Euclidean dist. between two points */
     def distance( a: SiftDescriptorContainer,  b: SiftDescriptorContainer ) : Int = {
