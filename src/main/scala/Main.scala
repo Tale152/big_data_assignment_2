@@ -1,7 +1,10 @@
+import eCP.Java.SiftDescriptorContainer
 import kMeans.implementations.BaseKMeans
-import org.apache.log4j.{Level, Logger}
+import org.apache.spark.SparkContext
 import utils.ContextFactory
+
 import java.nio.file.Paths
+import utils.LogEnabler.logSelectedOption
 
 
 object Main {
@@ -14,18 +17,19 @@ object Main {
     val dataPath = "bigann_query.seq"
 
     def main(args: Array[String]){
-      Logger.getLogger("org").setLevel(Level.OFF)
-      Logger.getLogger("akka").setLevel(Level.OFF)
-
-      println("STARTING COMPUTATION")
-
+      logSelectedOption(args)
       val sc = ContextFactory.create(appName, masterAddress, jarPath)
-
-      val result = BaseKMeans().compute(sc, dataPath)
-
-      println(result.mkString("Array(", ", ", ")"))
-
+      kMeans(args, sc, dataPath)
       sc.stop()
-      println("COMPUTATION ENDED")
     }
+
+  private def kMeans(args: Array[String], sc: SparkContext, dataPath: String): Unit ={
+    //TODO check args
+    val kMeansVersion = "DEFAULT"
+    val result = kMeansVersion match {
+      case "DEFAULT" => BaseKMeans().compute(sc, dataPath)
+      case _ => throw new IllegalArgumentException("The specified k-means version does not exist")
+    }
+    println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
+  }
 }
