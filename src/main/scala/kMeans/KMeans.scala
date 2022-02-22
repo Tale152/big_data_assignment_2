@@ -12,22 +12,25 @@ trait KMeans {
 
   protected def mapReduce(data: RDD[SiftDescriptorContainer], centroids: Broadcast[Array[SiftDescriptorContainer]]):Array[SiftDescriptorContainer]
 
-  protected def endCondition(counter: Int): Boolean
+  protected def endCondition(counter: Int,
+                             previousCentroids: Array[SiftDescriptorContainer],
+                             currentCentroids: Array[SiftDescriptorContainer]): Boolean
 
-  final def compute(sc: SparkContext, dataPath: String): Array[SiftDescriptorContainer] = {
+  final def compute(sc: SparkContext, dataPath: String): Unit = {
     val rdd = loadSIFTs(sc, dataPath)
     var broadcastCentroids = sc.broadcast(initCentroidSelector(rdd))
     var iterations = 0
     var result = Array[SiftDescriptorContainer]()
 
-    while(!endCondition(iterations)) {
-      if(iterations != 0){
+    while(!endCondition(iterations, broadcastCentroids.value, result)) {
+      if(iterations > 0){
         broadcastCentroids = sc.broadcast(result)
       }
       result = mapReduce(rdd, broadcastCentroids)
       broadcastCentroids.unpersist
       iterations += 1
     }
-    result
+    println("Computation completed in " + iterations + " iterations")
+    println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
   }
 }

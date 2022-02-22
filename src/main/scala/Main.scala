@@ -20,10 +20,9 @@ object Main {
   private def kMeans(args: Array[String], sc: SparkContext, dataPath: String): Unit ={
     //TODO check args
     val kMeansVersion = "DEFAULT"
-    val result = kMeansVersion match {
+    kMeansVersion match {
       case "DEFAULT" => BaseKMeansIterationTermination().compute(sc, dataPath)
       case _ => throw new IllegalArgumentException("The specified k-means version does not exist")
     }
-    println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
   }
 }
