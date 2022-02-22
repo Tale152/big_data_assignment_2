@@ -1,7 +1,9 @@
 import org.apache.log4j.{Level, Logger}
+import java.nio.file.Paths
 
 object Main {
-    
+
+    //println(Paths.get("target", "scala-2.12", "app_2.12-1.0.jar").toString)
     val appName = "test"
     //val masterAddress = "spark://spark-VirtualBox:7077"
     val masterAddress = "spark://192.168.1.82:7077"
