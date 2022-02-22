@@ -6,8 +6,8 @@ import org.apache.spark.rdd.RDD
 object Main {
     
     val appName = "test"
-    val masterAddress = "spark://192.168.1.82:7077"
-    val jarPath = "target\\scala-2.12\\app_2.12-1.0.jar"
+    val masterAddress = "spark://spark-VirtualBox:7077"
+    val jarPath = "target/scala-2.12/app_2.12-1.0.jar"
 
     val centroidNumber = 10
     val iterationNumber = 20
@@ -19,7 +19,7 @@ object Main {
 
        val kMeans = KMeansBuilder()
           .sparkContext(sc)
-          .dataPath("C:\\Users\\teemo\\Desktop\\big_data_assignment_2\\bigann_query.seq")
+          .dataPath("/home/spark/Documents/big_data_assignment_2/bigann_query.seq")
           .initCentroidSelector(rdd => rdd.take(centroidNumber))
           .mapReduce(mr)
           .endCondition(iteration => iteration == iterationNumber)
