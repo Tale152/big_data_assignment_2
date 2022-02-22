@@ -28,6 +28,7 @@ trait KMeans {
       }
       result = mapReduce(rdd, broadcastCentroids)
       broadcastCentroids.unpersist
+      println("Iteration number " + iterations + " completed")
       iterations += 1
     }
     println("Computation completed in " + iterations + " iterations")

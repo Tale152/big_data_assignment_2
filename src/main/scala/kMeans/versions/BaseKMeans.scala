@@ -4,7 +4,7 @@ import eCP.Java.SiftDescriptorContainer
 import kMeans.VectorOperation.similarity
 
 object BaseKMeans {
-  private val iterationNumber = 20
+  private val iterationNumber = 40
 
   case class BaseKMeansIterationTermination() extends KMeansRandomCentroids {
 
@@ -22,7 +22,7 @@ object BaseKMeans {
       if (counter == 0) {
         counter == iterationNumber
       } else {
-        (counter == iterationNumber) || similarity(currentCentroids, previousCentroids, 100)
+        (counter == iterationNumber) || similarity(currentCentroids, previousCentroids, 50)
       }
     }
   }
