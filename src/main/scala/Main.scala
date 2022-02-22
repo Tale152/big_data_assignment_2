@@ -4,6 +4,7 @@ import org.apache.spark.SparkContext
 import utils.ContextFactory
 import utils.LogEnabler.logSelectedOption
 import utils.Const
+import kMeans.implementations.BaseKMeans.BaseKMeansIterationTermination
 
 object Main {
     //val masterAddress = "spark://spark-VirtualBox:7077"
@@ -21,7 +22,7 @@ object Main {
     //TODO check args
     val kMeansVersion = "DEFAULT"
     val result = kMeansVersion match {
-      case "DEFAULT" => BaseKMeans().compute(sc, dataPath)
+      case "DEFAULT" => BaseKMeansIterationTermination().compute(sc, dataPath)
       case _ => throw new IllegalArgumentException("The specified k-means version does not exist")
     }
     println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
