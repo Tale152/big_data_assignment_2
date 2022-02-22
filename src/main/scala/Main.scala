@@ -1,3 +1,4 @@
+import org.apache.log4j.{Level, Logger}
 
 object Main {
     
@@ -10,12 +11,16 @@ object Main {
     val dataPath = "C:\\Users\\teemo\\Desktop\\big_data_assignment_2\\bigann_query.seq"
 
     def main(args: Array[String]){
+      Logger.getLogger("org").setLevel(Level.OFF)
+      Logger.getLogger("akka").setLevel(Level.OFF)
+
       println("STARTING COMPUTATION")
+
       val sc = ContextFactory.create(appName, masterAddress, jarPath)
 
       val result = BaseKMeans().compute(sc, dataPath)
 
-      println(result.length)
+      println(result.mkString("Array(", ", ", ")"))
 
       sc.stop()
       println("COMPUTATION ENDED")
