@@ -1,4 +1,6 @@
+import kMeans.implementations.BaseKMeans
 import org.apache.log4j.{Level, Logger}
+import utils.ContextFactory
 
 object Main {
     

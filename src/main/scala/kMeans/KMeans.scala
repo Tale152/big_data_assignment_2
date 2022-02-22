@@ -1,8 +1,9 @@
+package kMeans
+
 import eCP.Java.SiftDescriptorContainer
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
-
 
 trait KMeans {
   def compute(sc: SparkContext, dataPath: String): Array[SiftDescriptorContainer]

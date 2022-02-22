@@ -1,7 +1,10 @@
+package kMeans
+
 import eCP.Java.SiftDescriptorContainer
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
+import utils.DataLoader.loadSIFTs
 
 trait KMeansComputation {
     def compute: Array[SiftDescriptorContainer]
@@ -23,7 +26,7 @@ object KMeansComputation {
                                 mapReduce: (RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer],
                                 endCondition: Int => Boolean) extends KMeansComputation {
         override def compute: Array[SiftDescriptorContainer] = {
-            val rdd = DataLoader.loadSIFTs(sc, path)
+            val rdd = loadSIFTs(sc, path)
             var broadcastCentroids = sc.broadcast(initCentroidSelector(rdd))
             var iterations = 0
             var result = Array[SiftDescriptorContainer]()

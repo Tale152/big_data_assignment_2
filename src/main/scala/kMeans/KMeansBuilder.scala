@@ -1,3 +1,5 @@
+package kMeans
+
 import eCP.Java.SiftDescriptorContainer
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
@@ -11,27 +13,27 @@ case class KMeansBuilder() {
   private var mr = Option.empty[(RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer]]
   private var ec = Option.empty[Int => Boolean]
 
-  def dataPath(path: String): KMeansBuilder ={
+  def dataPath(path: String): KMeansBuilder = {
     this.path = Option(path)
     this
   }
 
-  def sparkContext(sc: SparkContext): KMeansBuilder ={
+  def sparkContext(sc: SparkContext): KMeansBuilder = {
     this.sc = Option(sc)
     this
   }
 
-  def initCentroidSelector(initSelector: RDD[SiftDescriptorContainer] => Array[SiftDescriptorContainer]): KMeansBuilder ={
+  def initCentroidSelector(initSelector: RDD[SiftDescriptorContainer] => Array[SiftDescriptorContainer]): KMeansBuilder = {
     this.initSelector = Option(initSelector)
     this
   }
 
-  def mapReduce(mr: (RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer]): KMeansBuilder ={
+  def mapReduce(mr: (RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer]): KMeansBuilder = {
     this.mr = Option(mr)
     this
   }
 
-  def endCondition(ec: Int => Boolean): KMeansBuilder ={
+  def endCondition(ec: Int => Boolean): KMeansBuilder = {
     this.ec = Option(ec)
     this
   }
