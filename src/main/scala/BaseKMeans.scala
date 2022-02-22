@@ -24,24 +24,26 @@ case class BaseKMeans() extends AbstractKMeans {
       .map(v => new SiftDescriptorContainer(idGenerator.getNextId, divideVector(v._2._2, v._2._1)))
       .collect()
   }
-}
 
-private case class IdGenerator(){
-  private var i = 0
-  def getNextId: Int = {
-    val res = i
-    i += 1
-    res
+  private case class IdGenerator(){
+    private var i = 0
+    def getNextId: Int = {
+      val res = i
+      i += 1
+      res
+    }
+  }
+
+  private def divideVector(vector: Array[Double], n: Int): Array[Byte] = vector.map(x => (x/n).asInstanceOf[Byte])
+
+  private def sumVectors(x: Array[Double], y: Array[Double]): Array[Double] = {
+    var i = 0
+    x.map(e => {
+      val r = e + y(i)
+      i += 1
+      r
+    })
   }
 }
 
-private def divideVector(vector: Array[Double], n: Int): Array[Byte] = vector.map(x => (x/n).asInstanceOf[Byte])
 
-private def sumVectors(x: Array[Double], y: Array[Double]): Array[Double] = {
-  var i = 0
-  x.map(e => {
-    val r = e + y(i)
-    i += 1
-    r
-  })
-}
