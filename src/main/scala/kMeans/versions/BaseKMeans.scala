@@ -1,16 +1,29 @@
 package kMeans.versions
 
 import eCP.Java.SiftDescriptorContainer
+import kMeans.VectorOperation.similarity
 
 object BaseKMeans {
-  case class BaseKMeansIterationTermination() extends KMeansRandomCentroids {
+  private val iterationNumber = 20
 
-    private val iterationNumber = 10
+  case class BaseKMeansIterationTermination() extends KMeansRandomCentroids {
 
     override protected final def endCondition(counter: Int,
                                               previousCentroids: Array[SiftDescriptorContainer],
                                               currentCentroids: Array[SiftDescriptorContainer]): Boolean = {
       counter == iterationNumber
+    }
+  }
+
+  case class BaseKMeansCentroidsTermination() extends KMeansRandomCentroids {
+    override protected final def endCondition(counter: Int,
+                                              previousCentroids: Array[SiftDescriptorContainer],
+                                              currentCentroids: Array[SiftDescriptorContainer]): Boolean = {
+      if (counter == 0) {
+        counter == iterationNumber
+      } else {
+        (counter == iterationNumber) || similarity(currentCentroids, previousCentroids, 100)
+      }
     }
   }
 }

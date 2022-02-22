@@ -3,7 +3,7 @@ import org.apache.spark.SparkContext
 import utils.ContextFactory
 import utils.LogEnabler.logSelectedOption
 import utils.Const
-import kMeans.versions.BaseKMeans.BaseKMeansIterationTermination
+import kMeans.versions.BaseKMeans.{BaseKMeansIterationTermination, BaseKMeansCentroidsTermination}
 
 object Main {
     //val masterAddress = "spark://spark-VirtualBox:7077"
@@ -19,9 +19,10 @@ object Main {
 
   private def kMeans(args: Array[String], sc: SparkContext, dataPath: String): Unit ={
     //TODO check args
-    val kMeansVersion = "DEFAULT"
+    val kMeansVersion = "CENTROID_STABILITY"
     kMeansVersion match {
       case "DEFAULT" => BaseKMeansIterationTermination().compute(sc, dataPath)
+      case "CENTROID_STABILITY" => BaseKMeansCentroidsTermination().compute(sc, dataPath)
       case _ => throw new IllegalArgumentException("The specified k-means version does not exist")
     }
   }

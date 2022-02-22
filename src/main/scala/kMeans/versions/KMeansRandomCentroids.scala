@@ -25,5 +25,4 @@ trait KMeansRandomCentroids extends KMeans {
       .map(v => new SiftDescriptorContainer(v._1, divide(v._2._2, v._2._1)))
       .collect()
 
-
 }
