@@ -2,35 +2,39 @@ import EuclideanDistance.distance
 import eCP.Java.SiftDescriptorContainer
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
+import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 object Main {
     
     val appName = "test"
-    val masterAddress = "spark://spark-VirtualBox:7077"
-    val jarPath = "target/scala-2.12/app_2.12-1.0.jar"
+    //val masterAddress = "spark://spark-VirtualBox:7077"
+    val masterAddress = "spark://192.168.1.82:7077"
+    //val jarPath = "target/scala-2.12/app_2.12-1.0.jar"
+    val jarPath = "target\\scala-2.12\\app_2.12-1.0.jar"
+    //val dataPath = "/home/spark/Documents/big_data_assignment_2/bigann_query.seq"
+    val dataPath = "C:\\Users\\teemo\\Desktop\\big_data_assignment_2\\bigann_query.seq"
 
     val centroidNumber = 10
     val iterationNumber = 20
 
     def main(args: Array[String]){
+      println("STARTING COMPUTATION")
+      val sc = ContextFactory.create(appName, masterAddress, jarPath)
 
-        println("STARTING COMPUTATION")
-        val sc = ContextFactory.create(appName, masterAddress, jarPath)
+      val kMeans = KMeansBuilder()
+        .sparkContext(sc)
+        .dataPath(dataPath)
+        .initCentroidSelector(rdd => rdd.take(centroidNumber))
+        .mapReduce(mr)
+        .endCondition(iteration => iteration == iterationNumber)
+        .build()
 
-       val kMeans = KMeansBuilder()
-          .sparkContext(sc)
-          .dataPath("/home/spark/Documents/big_data_assignment_2/bigann_query.seq")
-          .initCentroidSelector(rdd => rdd.take(centroidNumber))
-          .mapReduce(mr)
-          .endCondition(iteration => iteration == iterationNumber)
-          .build()
+      val result = kMeans.compute
 
-        val result = kMeans.compute
+      println(result.length)
 
-        println(result.length)
-
-        sc.stop()
-        println("COMPUTATION ENDED")
+      sc.stop()
+      println("COMPUTATION ENDED")
     }
 
   def sumArray(x: Array[Byte], y: Array[Byte]): Array[Int] ={
