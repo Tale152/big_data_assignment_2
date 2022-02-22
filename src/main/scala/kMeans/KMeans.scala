@@ -6,13 +6,13 @@ import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import utils.DataLoader.loadSIFTs
 
-protected trait KMeans {
+trait KMeans {
 
-  def initCentroidSelector(data: RDD[SiftDescriptorContainer]): Array[SiftDescriptorContainer]
+  protected def initCentroidSelector(data: RDD[SiftDescriptorContainer]): Array[SiftDescriptorContainer]
 
-  def mapReduce(data: RDD[SiftDescriptorContainer], centroids: Broadcast[Array[SiftDescriptorContainer]]):Array[SiftDescriptorContainer]
+  protected def mapReduce(data: RDD[SiftDescriptorContainer], centroids: Broadcast[Array[SiftDescriptorContainer]]):Array[SiftDescriptorContainer]
 
-  def endCondition(counter: Int): Boolean
+  protected def endCondition(counter: Int): Boolean
 
   final def compute(sc: SparkContext, dataPath: String): Array[SiftDescriptorContainer] = {
     val rdd = loadSIFTs(sc, dataPath)

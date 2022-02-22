@@ -6,13 +6,13 @@ import kMeans.KMeans
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 
-protected trait KMeansRandomCentroids extends KMeans {
+trait KMeansRandomCentroids extends KMeans {
   private val centroidNumber = 10
 
-  override def initCentroidSelector(data: RDD[SiftDescriptorContainer]): Array[SiftDescriptorContainer] =
+  override protected final def initCentroidSelector(data: RDD[SiftDescriptorContainer]): Array[SiftDescriptorContainer] =
     data.take(centroidNumber)
 
-  override def mapReduce(data: RDD[SiftDescriptorContainer],
+  override protected final def mapReduce(data: RDD[SiftDescriptorContainer],
                          centroids: Broadcast[Array[SiftDescriptorContainer]]): Array[SiftDescriptorContainer] =
     data
       .map(point => {
