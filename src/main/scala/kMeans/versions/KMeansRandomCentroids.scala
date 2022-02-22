@@ -1,7 +1,8 @@
-package kMeans
+package kMeans.versions
 
 import eCP.Java.SiftDescriptorContainer
 import kMeans.EuclideanDistance.distance
+import kMeans.KMeans
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 
@@ -11,7 +12,8 @@ protected trait KMeansRandomCentroids extends KMeans {
   override def initCentroidSelector(data: RDD[SiftDescriptorContainer]): Array[SiftDescriptorContainer] =
     data.take(centroidNumber)
 
-  override def mapReduce(data: RDD[SiftDescriptorContainer], centroids: Broadcast[Array[SiftDescriptorContainer]]): Array[SiftDescriptorContainer] =
+  override def mapReduce(data: RDD[SiftDescriptorContainer],
+                         centroids: Broadcast[Array[SiftDescriptorContainer]]): Array[SiftDescriptorContainer] =
     data
       .map(point => {
         val pointsDistance = centroids.value.map(centroid => (centroid.id, distance(centroid, point)))

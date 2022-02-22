@@ -1,10 +1,9 @@
-import kMeans.implementations.BaseKMeans
 import org.apache.spark.SparkContext
 
 import utils.ContextFactory
 import utils.LogEnabler.logSelectedOption
 import utils.Const
-import kMeans.implementations.BaseKMeans.BaseKMeansIterationTermination
+import kMeans.versions.BaseKMeans.BaseKMeansIterationTermination
 
 object Main {
     //val masterAddress = "spark://spark-VirtualBox:7077"

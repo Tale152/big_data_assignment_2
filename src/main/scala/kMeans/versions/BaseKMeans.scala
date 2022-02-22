@@ -1,6 +1,4 @@
-package kMeans.implementations
-
-import kMeans.KMeansRandomCentroids
+package kMeans.versions
 
 object BaseKMeans {
   case class BaseKMeansIterationTermination() extends KMeansRandomCentroids {
