@@ -1,16 +1,18 @@
 package utils
 
+import kMeans.versions.KMeansVersions
+
 import java.io.File
 
 private object Flags{
-  val SPARK_LOG:String = "-sl"
-  val MASTER:String = "-m"
-  val DATA:String = "-d"
-  val VERSION:String = "-v"
+  val SPARK_LOG: String = "-sl"
+  val MASTER: String = "-m"
+  val DATA: String = "-d"
+  val VERSION: String = "-v"
 }
 
 private object Regex{
-  val MASTER:String = Flags.MASTER + "=spark://(.*)"
+  val MASTER: String = Flags.MASTER + "=spark://(.*)"
   val DATA: String = Flags.DATA + "=(.*).seq"
   val VERSION: String = Flags.VERSION + "=(.*)"
 }
@@ -50,7 +52,7 @@ object ArgsProvider{
   def version: String = {
     val occurrences = countArgs(Regex.VERSION)
     if(occurrences == 0){
-      "DEFAULT" //TODO constants
+      KMeansVersions.DEFAULT
     } else {
       throwIf(occurrences > 1, "More than one " + Flags.VERSION + " flag provided")
       getArg(Regex.VERSION, Flags.VERSION).toUpperCase()
