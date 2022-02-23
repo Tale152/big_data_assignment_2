@@ -33,7 +33,7 @@ You must have a spark master and at least one worker running on your machine. Fo
 
 Then you can run the program:
 ```
-sbt "run -m=<SPARK MASTER IP> -d=<FILE PATH> -v=<KMEANS VERSION> -c=<CENTROIDS NUMBER> -sl"
+sbt "run -m=<SPARK MASTER IP> -d=<FILE PATH> -cs=<CENTROIDS SELECTOR> -cn=<CENTROIDS NUMBER> -mr=<MAP-REDUCE VERSION> -ec=<END CONDITION> -sl"
 ```
 
 Mandatory arguments:  
@@ -41,9 +41,11 @@ Mandatory arguments:
 - **-d** is the file path that is going to be used to perform K-Means clustering: it must be a .seq file.
 
 Optional arguments:  
-- **-v** if ommitted it is going to be execute the default K-Means version implemented. The versions currently available are: DEFAULT, CENTROID_STABILITY.
-- **-c** accepts a number to specify the number of centroids that k-means is going to use. If not specified, it is automatically set as 100 centroids.
-- **-sl** is the option that enables spark logging: just ommit this to disable it and to read only the program output.
+- **-cs** determines how the centroids will be chosen. If omitted "first_n" is used.
+- **-cn** accepts a number to specify the number of centroids that k-means is going to use. If not specified, it is automatically set as 100 centroids.
+- **-mr** sets how the map-reduce operation will be performed. When omitted "default" will be chosen.
+- **-ec** determines the end condition that terminates the computation ("max" if omitted).
+- **-sl** is the option that enables spark logging: just omit this to disable it and to read only the program output.
 
 ## K-Means Version Implemented
 
