@@ -3,7 +3,7 @@ import utils.{Const, ContextFactory}
 import utils.LogEnabler.logSelectedOption
 import kMeans.versions.BaseKMeans.{BaseKMeansCentroidsTermination, BaseKMeansIterationTermination}
 import kMeans.versions.KMeansVersions
-import utils.ArgsProvider.{dataPath, logFlag, setArgs, sparkMaster, version}
+import utils.ArgsProvider.{dataPath, logFlag, setArgs, sparkMaster, version, nCentroids}
 
 object Main {
 
@@ -11,15 +11,15 @@ object Main {
       setArgs(args)
       logSelectedOption(logFlag)
       val sc = ContextFactory.create(Const.appName, sparkMaster, Const.jarPath)
-      kMeans(sc, dataPath, version)
+      kMeans(sc)
       sc.stop()
     }
 
-  private def kMeans(sc: SparkContext, dataPath: String, kMeansVersion: String): Unit = {
-    println("Running K-Means version: " + kMeansVersion)
-    kMeansVersion match {
-      case KMeansVersions.DEFAULT => BaseKMeansIterationTermination().compute(sc, dataPath)
-      case KMeansVersions.CENTROID_STABILITY => BaseKMeansCentroidsTermination().compute(sc, dataPath)
+  private def kMeans(sc: SparkContext): Unit = {
+    println("Running K-Means version: " + version + " with " + nCentroids + " centroids")
+    version match {
+      case KMeansVersions.DEFAULT => BaseKMeansIterationTermination().compute(sc, nCentroids, dataPath)
+      case KMeansVersions.CENTROID_STABILITY => BaseKMeansCentroidsTermination().compute(sc, nCentroids, dataPath)
       case _ => throw new IllegalArgumentException("The specified k-means version does not exist")
     }
   }

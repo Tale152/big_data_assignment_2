@@ -19,10 +19,10 @@ object BaseKMeans {
     override protected final def endCondition(counter: Int,
                                               previousCentroids: Array[SiftDescriptorContainer],
                                               currentCentroids: Array[SiftDescriptorContainer]): Boolean = {
-      if (counter == 0) {
-        counter == iterationNumber
-      } else {
+      if (counter > 0) {
         (counter == iterationNumber) || similarity(currentCentroids, previousCentroids, 50)
+      } else {
+        false
       }
     }
   }
