@@ -9,12 +9,14 @@ private object Flags{
   val MASTER: String = "-m"
   val DATA: String = "-d"
   val VERSION: String = "-v"
+  val CENTROIDS: String = "-c"
 }
 
 private object Regex{
   val MASTER: String = Flags.MASTER + "=spark://(.*)"
   val DATA: String = Flags.DATA + "=(.*).seq"
   val VERSION: String = Flags.VERSION + "=(.*)"
+  val CENTROIDS: String = Flags.CENTROIDS + "=(.*)"
 }
 
 object ArgsProvider{
@@ -56,6 +58,20 @@ object ArgsProvider{
     } else {
       throwIf(occurrences > 1, "More than one " + Flags.VERSION + " flag provided")
       getArg(Regex.VERSION, Flags.VERSION).toUpperCase()
+    }
+  }
+
+  def nCentroids: Int = {
+    val occurrences = countArgs(Regex.CENTROIDS)
+    if(occurrences == 0){
+      100
+    } else {
+      throwIf(occurrences > 1, "More than one " + Flags.CENTROIDS + " flag provided")
+      val nString = getArg(Regex.CENTROIDS, Flags.CENTROIDS)
+      throwIf(nString.matches("(.*)[a-z]+(.*)"), Flags.CENTROIDS + " has to be an int value")
+      val res = Integer.parseInt(nString)
+      throwIf(res <= 0, Flags.CENTROIDS + " has to be greater than zero")
+      res
     }
   }
 
