@@ -14,9 +14,12 @@ object Main {
       sc.stop()
     }
 
-  private def kMeans(sc: SparkContext, dataPath: String, kMeansVersion: String): Unit = kMeansVersion match {
+  private def kMeans(sc: SparkContext, dataPath: String, kMeansVersion: String): Unit = {
+    println("Running K-Means version: " + kMeansVersion)
+    kMeansVersion match {
       case "DEFAULT" => BaseKMeansIterationTermination().compute(sc, dataPath)
       case "CENTROID_STABILITY" => BaseKMeansCentroidsTermination().compute(sc, dataPath)
       case _ => throw new IllegalArgumentException("The specified k-means version does not exist")
+    }
   }
 }

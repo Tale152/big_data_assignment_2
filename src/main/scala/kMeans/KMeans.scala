@@ -6,17 +6,30 @@ import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import utils.DataLoader.loadSIFTs
 
+import java.util.concurrent.TimeUnit
+
 trait KMeans {
 
   protected def initCentroidSelector(data: RDD[SiftDescriptorContainer]): Array[SiftDescriptorContainer]
 
-  protected def mapReduce(data: RDD[SiftDescriptorContainer], centroids: Broadcast[Array[SiftDescriptorContainer]]):Array[SiftDescriptorContainer]
+  protected def mapReduce(data: RDD[SiftDescriptorContainer],
+                          centroids: Broadcast[Array[SiftDescriptorContainer]]): Array[SiftDescriptorContainer]
 
   protected def endCondition(counter: Int,
                              previousCentroids: Array[SiftDescriptorContainer],
                              currentCentroids: Array[SiftDescriptorContainer]): Boolean
 
   final def compute(sc: SparkContext, dataPath: String): Unit = {
+    val startTime = System.nanoTime()
+    val (result, iterations) = computation(sc, dataPath)
+    val endTime = System.nanoTime()
+
+    println("Computation completed in " + iterations + " iterations")
+    println("Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(endTime - startTime) + " ms")
+    //println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
+  }
+
+  private def computation(sc: SparkContext, dataPath: String): (Array[SiftDescriptorContainer], Int) = {
     val rdd = loadSIFTs(sc, dataPath)
     var broadcastCentroids = sc.broadcast(initCentroidSelector(rdd))
     var iterations = 0
@@ -31,7 +44,6 @@ trait KMeans {
       println("Iteration number " + iterations + " completed")
       iterations += 1
     }
-    println("Computation completed in " + iterations + " iterations")
-    println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
+    (result, iterations)
   }
 }

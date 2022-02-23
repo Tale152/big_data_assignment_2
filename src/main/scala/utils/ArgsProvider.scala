@@ -53,7 +53,7 @@ object ArgsProvider{
       "DEFAULT" //TODO constants
     } else {
       throwIf(occurrences > 1, "More than one " + Flags.VERSION + " flag provided")
-      getArg(Regex.VERSION, Flags.VERSION)
+      getArg(Regex.VERSION, Flags.VERSION).toUpperCase()
     }
   }
 
