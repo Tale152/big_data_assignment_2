@@ -67,34 +67,19 @@ object ArgsProvider{
     }
   }
 
-  //TODO i tre metodi sotto sono sostanzialmente la stessa cosa
-  def centroidSelector: String = {
-    val occurrences = countArgs(Regex.CENTROIDS_SELECTOR)
-    if(occurrences == 0){
-      "FIRST_N" //TODO const
-    } else {
-      throwIf(occurrences > 1, "More than one " + Flags.CENTROIDS_SELECTOR + " flag provided")
-      getArg(Regex.CENTROIDS_SELECTOR, Flags.CENTROIDS_SELECTOR).toUpperCase()
-    }
-  }
+  def centroidSelector: String = selectionWithDefault(Regex.CENTROIDS_SELECTOR, Flags.CENTROIDS_SELECTOR, "FIRST_N")
 
-  def endCondition: String = {
-    val occurrences = countArgs(Regex.END_CONDITION)
-    if(occurrences == 0){
-      "MAX" //TODO const
-    } else {
-      throwIf(occurrences > 1, "More than one " + Flags.END_CONDITION + " flag provided")
-      getArg(Regex.END_CONDITION, Flags.END_CONDITION).toUpperCase()
-    }
-  }
+  def endCondition: String = selectionWithDefault(Regex.END_CONDITION, Flags.END_CONDITION, "MAX")
 
-  def mapReduce: String = {
-    val occurrences = countArgs(Regex.MAP_REDUCE)
+  def mapReduce: String = selectionWithDefault(Regex.MAP_REDUCE, Flags.MAP_REDUCE, "DEFAULT")
+
+  private def selectionWithDefault(regex: String, flag: String, default: String): String = {
+    val occurrences = countArgs(regex)
     if(occurrences == 0){
-      "DEFAULT" //TODO const
+      default
     } else {
-      throwIf(occurrences > 1, "More than one " + Flags.MAP_REDUCE + " flag provided")
-      getArg(Regex.MAP_REDUCE, Flags.MAP_REDUCE).toUpperCase()
+      throwIf(occurrences > 1, "More than one " + flag + " flag provided")
+      getArg(regex, flag).toUpperCase()
     }
   }
 
