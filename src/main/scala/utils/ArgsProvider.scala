@@ -71,7 +71,7 @@ object ArgsProvider{
   def centroidSelector: String = {
     val occurrences = countArgs(Regex.CENTROIDS_SELECTOR)
     if(occurrences == 0){
-      "FIRST" //TODO const
+      "FIRST_N" //TODO const
     } else {
       throwIf(occurrences > 1, "More than one " + Flags.CENTROIDS_SELECTOR + " flag provided")
       getArg(Regex.CENTROIDS_SELECTOR, Flags.CENTROIDS_SELECTOR).toUpperCase()

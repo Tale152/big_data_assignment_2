@@ -1,7 +1,7 @@
 import kMeans.KMeans
 import kMeans.versions.EndConditions.{endByMaxReached, endBySimilarity}
 import kMeans.versions.InitCentroidSelectors.useFirstN
-import kMeans.versions.MapReduces.baseMapReduce
+import kMeans.versions.MapReduces.{baseMapReduce, earlyHaltingMapReduce}
 import org.apache.spark.SparkContext
 import utils.{Const, ContextFactory}
 import utils.LogEnabler.logSelectedOption
@@ -21,11 +21,12 @@ object Main {
     printConfiguration()
     val kMeansExecutor = KMeans(sc, centroidsNumber, dataPath)
     centroidSelector match {
-      case "FIRST" => kMeansExecutor.setInitCentroidSelector(useFirstN)
+      case "FIRST_N" => kMeansExecutor.setInitCentroidSelector(useFirstN)
       case _ => throw new IllegalArgumentException("The specified centroid selector does not exist")
     }
     mapReduce match {
       case "DEFAULT" => kMeansExecutor.setMapReduce(baseMapReduce)
+      case "EARLY_HALTING" => kMeansExecutor.setMapReduce(earlyHaltingMapReduce)
       case _ => throw new IllegalArgumentException("The specified map-reduce does not exist")
     }
     endCondition match {
