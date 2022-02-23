@@ -1,5 +1,5 @@
 # BIG DATA MANAGEMENT - Assignment 2
-This is an assignment for the course of Bid Data Management (T-764-DATA) taken in Reykjavik University during the Spring semester 2022.  
+This is an assignment for the course of Big Data Management (T-764-DATA) taken in Reykjavik University during the Spring semester 2022.  
 This project is developed by: [Alessandro Talmi](https://github.com/Tale152) and [Elisa Tronetti](https://github.com/ElisaTronetti).
 
 ## Main Goal
@@ -61,3 +61,5 @@ Thi K-Means version is very similar to the Default one, with only one main diffe
 The __end conditions__ in this version are:
 - if the maximum number of iterations is reached
 - if the centroids values are stable respection a specified tolerance. Again it is used the Euclidean distance to calculate the distance between the previous iteration centroids and the currents: if the distance is less then the tolerance, then the algorithm can stop and it will return the results.
+
+## Code structure
