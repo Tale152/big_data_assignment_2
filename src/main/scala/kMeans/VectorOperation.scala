@@ -4,6 +4,7 @@ import eCP.Java.SiftDescriptorContainer
 import kMeans.EuclideanDistance.distance
 
 object VectorOperation {
+
   def divide(vector: Array[Double], n: Int): Array[Byte] = vector.map(x => (x / n).asInstanceOf[Byte])
 
   def sum(x: Array[Double], y: Array[Double]): Array[Double] = {

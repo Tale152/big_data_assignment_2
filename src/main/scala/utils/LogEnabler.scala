@@ -6,7 +6,7 @@ object LogEnabler {
 
   def logSelectedOption(args: Array[String]): Unit = {
     //TODO check args
-    val logDisabled = true
+    val logDisabled = false
     if(logDisabled){
       Logger.getLogger("org").setLevel(Level.OFF)
       Logger.getLogger("akka").setLevel(Level.OFF)
