@@ -31,7 +31,7 @@ sbt package
 
 You must have a spark master and at least one worker running on your machine. Follow [Spark documentation](https://spark.apache.org/docs/3.0.3/spark-standalone.html#launching-spark-applications) to correctly run them.
 
-Then you can run the program:
+Then you can run the program (arguments can be placed in any order):
 ```
 sbt "run -m=<SPARK MASTER IP> -d=<FILE PATH> -cs=<CENTROIDS SELECTOR> -cn=<CENTROIDS NUMBER> -mr=<MAP-REDUCE VERSION> -ec=<END CONDITION> -sl"
 ```
@@ -47,21 +47,21 @@ Optional arguments:
 - **-ec** determines the end condition that terminates the computation ("max" if omitted).
 - **-sl** is the option that enables spark logging: just omit this to disable it and to read only the program output.
 
-## K-Means Version Implemented
+## Versions implemented
+### Centroids selection (-cs)
+- **first_n**: selects from the beginning of the data Array as many centroids as specified by -cn
 
-### Default
-The default version of K-Means select from the beginning of the Array as many centroids as specified.  
-Then it is going to be calculated for each point of the Array the Euclidean distance of that point from all the centroids.  
-For each point is going to be returned a tuple which contains the id of the centroid which is the nearest to the point, a counter that is used to find the total number of points in the specific cluster and the actual point.  
-Once that is done, for each centroid is going to be calculated the total number of point in that cluster and the average of all the points. The average is the new cluster centroid that is going to be used for the next iteration of the argorithm.  
-
-The main distinctive traits is the __end coindition__: this version of K-Means just continues until it has finished to compute all the iterations, even in the case that a stable version has been already found.
-
-### Centroid Stability
-Thi K-Means version is very similar to the Default one, with only one main difference that helps to increase the computational efficiency.  
-
-The __end conditions__ in this version are:
-- if the maximum number of iterations is reached
-- if the centroids values are stable respection a specified tolerance. Again it is used the Euclidean distance to calculate the distance between the previous iteration centroids and the currents: if the distance is less then the tolerance, then the algorithm can stop and it will return the results.
+### Map-reduce (-mr)
+- **default**:<br />
+For each point of the Array the Euclidean distance of that point from all the centroids is calculated.  
+Then, for each point is going to be returned a tuple which contains the id of the centroid which is the nearest to the point, a counter that is used to find the total number of points in the specific cluster and the actual point.  
+Once that is done, for each centroid is going to be calculated the total number of point in that cluster and the average of all the points. The average is the new cluster centroid that is going to be used for the next iteration of the algorithm.
+- **early_halting**:<br />
+This implementation does the exact same thing as the default one but tries to enhance performances using the early halting technique when calculating the distance between every point and every centroid.
+### End condition (-ec)
+- **max**:<br />
+This version of just continues to compute K-Means until all the iterations are executed, even in the case that a stable version has been already found.
+- **similarity**:<br />
+  If the centroids values are stable respection a specified tolerance. Euclidean distance is used to calculate the distance between the previous iteration centroids and the currents: if the distance is less than the tolerance, then the algorithm can stop and it will return the results. In the unfortunate circumstance that stability is never reached, computation will stop when max iterations are reached.
 
 ## Code structure
