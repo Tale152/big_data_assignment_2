@@ -1,22 +1,24 @@
 package utils
 
-import kMeans.versions.KMeansVersions
-
 import java.io.File
 
 private object Flags{
   val SPARK_LOG: String = "-sl"
   val MASTER: String = "-m"
   val DATA: String = "-d"
-  val VERSION: String = "-v"
-  val CENTROIDS: String = "-c"
+  val MAP_REDUCE: String = "-mr"
+  val END_CONDITION: String = "-ec"
+  val CENTROIDS_SELECTOR: String = "-cs"
+  val CENTROIDS_NUMBER: String = "-cn"
 }
 
 private object Regex{
   val MASTER: String = Flags.MASTER + "=spark://(.*)"
   val DATA: String = Flags.DATA + "=(.*).seq"
-  val VERSION: String = Flags.VERSION + "=(.*)"
-  val CENTROIDS: String = Flags.CENTROIDS + "=(.*)"
+  val MAP_REDUCE: String = Flags.MAP_REDUCE + "=(.*)"
+  val END_CONDITION: String = Flags.END_CONDITION + "=(.*)"
+  val CENTROIDS_SELECTOR: String = Flags.CENTROIDS_SELECTOR + "=(.*)"
+  val CENTROIDS_NUMBER: String = Flags.CENTROIDS_NUMBER + "=(.*)"
 }
 
 object ArgsProvider{
@@ -51,27 +53,48 @@ object ArgsProvider{
     path
   }
 
-  def version: String = {
-    val occurrences = countArgs(Regex.VERSION)
-    if(occurrences == 0){
-      KMeansVersions.DEFAULT
-    } else {
-      throwIf(occurrences > 1, "More than one " + Flags.VERSION + " flag provided")
-      getArg(Regex.VERSION, Flags.VERSION).toUpperCase()
-    }
-  }
-
-  def nCentroids: Int = {
-    val occurrences = countArgs(Regex.CENTROIDS)
+  def centroidsNumber: Int = {
+    val occurrences = countArgs(Regex.CENTROIDS_NUMBER)
     if(occurrences == 0){
       100
     } else {
-      throwIf(occurrences > 1, "More than one " + Flags.CENTROIDS + " flag provided")
-      val nString = getArg(Regex.CENTROIDS, Flags.CENTROIDS)
-      throwIf(nString.matches("(.*)[a-z]+(.*)"), Flags.CENTROIDS + " has to be an int value")
+      throwIf(occurrences > 1, "More than one " + Flags.CENTROIDS_NUMBER + " flag provided")
+      val nString = getArg(Regex.CENTROIDS_NUMBER, Flags.CENTROIDS_NUMBER)
+      throwIf(nString.matches("(.*)[a-z]+(.*)"), Flags.CENTROIDS_NUMBER + " has to be an int value")
       val res = Integer.parseInt(nString)
-      throwIf(res <= 0, Flags.CENTROIDS + " has to be greater than zero")
+      throwIf(res <= 0, Flags.CENTROIDS_NUMBER + " has to be greater than zero")
       res
+    }
+  }
+
+  //TODO i tre metodi sotto sono sostanzialmente la stessa cosa
+  def centroidSelector: String = {
+    val occurrences = countArgs(Regex.CENTROIDS_SELECTOR)
+    if(occurrences == 0){
+      "FIRST" //TODO const
+    } else {
+      throwIf(occurrences > 1, "More than one " + Flags.CENTROIDS_SELECTOR + " flag provided")
+      getArg(Regex.CENTROIDS_SELECTOR, Flags.CENTROIDS_SELECTOR).toUpperCase()
+    }
+  }
+
+  def endCondition: String = {
+    val occurrences = countArgs(Regex.END_CONDITION)
+    if(occurrences == 0){
+      "MAX" //TODO const
+    } else {
+      throwIf(occurrences > 1, "More than one " + Flags.END_CONDITION + " flag provided")
+      getArg(Regex.END_CONDITION, Flags.END_CONDITION).toUpperCase()
+    }
+  }
+
+  def mapReduce: String = {
+    val occurrences = countArgs(Regex.MAP_REDUCE)
+    if(occurrences == 0){
+      "DEFAULT" //TODO const
+    } else {
+      throwIf(occurrences > 1, "More than one " + Flags.MAP_REDUCE + " flag provided")
+      getArg(Regex.MAP_REDUCE, Flags.MAP_REDUCE).toUpperCase()
     }
   }
 

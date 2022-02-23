@@ -8,20 +8,28 @@ import utils.DataLoader.loadSIFTs
 
 import java.util.concurrent.TimeUnit
 
-trait KMeans {
+final case class KMeans(private val sc: SparkContext, private val nCentroids: Int, private val dataPath: String) {
 
-  protected def initCentroidSelector(data: RDD[SiftDescriptorContainer], n: Int): Array[SiftDescriptorContainer]
+  private var initCentroidSelector: Option[(RDD[SiftDescriptorContainer], Int) => Array[SiftDescriptorContainer]] = None
 
-  protected def mapReduce(data: RDD[SiftDescriptorContainer],
-                          centroids: Broadcast[Array[SiftDescriptorContainer]]): Array[SiftDescriptorContainer]
+  private var mapReduce :Option[(RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer]] = None
 
-  protected def endCondition(counter: Int,
-                             previousCentroids: Array[SiftDescriptorContainer],
-                             currentCentroids: Array[SiftDescriptorContainer]): Boolean
+  private var endCondition: Option[(Int, Array[SiftDescriptorContainer], Array[SiftDescriptorContainer]) => Boolean] = None
 
-  final def compute(sc: SparkContext, nCentroids: Int, dataPath: String): Unit = {
+  def setInitCentroidSelector(ics: (RDD[SiftDescriptorContainer], Int) => Array[SiftDescriptorContainer]): Unit = {
+    initCentroidSelector = Some(ics)
+  }
+  def setMapReduce(mr: (RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer]): Unit = {
+    mapReduce = Some(mr)
+  }
+
+  def setEndCondition(ec: (Int, Array[SiftDescriptorContainer], Array[SiftDescriptorContainer]) => Boolean): Unit = {
+    endCondition = Some(ec)
+  }
+
+  def compute(): Unit = {
     val startTime = System.nanoTime()
-    val (result, iterations) = computation(sc, nCentroids, dataPath)
+    val (result, iterations) = computation()
     val endTime = System.nanoTime()
 
     println("Computation completed in " + iterations + " iterations")
@@ -29,17 +37,17 @@ trait KMeans {
     //println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
   }
 
-  private def computation(sc: SparkContext, nCentroids: Int, dataPath: String): (Array[SiftDescriptorContainer], Int) = {
+  private def computation() = {
     val rdd = loadSIFTs(sc, dataPath)
-    var broadcastCentroids = sc.broadcast(initCentroidSelector(rdd, nCentroids))
+    var broadcastCentroids = sc.broadcast(initCentroidSelector.get(rdd, nCentroids))
     var iterations = 0
     var result = Array[SiftDescriptorContainer]()
 
-    while(!endCondition(iterations, broadcastCentroids.value, result)) {
+    while(!endCondition.get(iterations, broadcastCentroids.value, result)) {
       if(iterations > 0){
         broadcastCentroids = sc.broadcast(result)
       }
-      result = mapReduce(rdd, broadcastCentroids)
+      result = mapReduce.get(rdd, broadcastCentroids)
       broadcastCentroids.unpersist
       println("Iteration number " + iterations + " completed")
       iterations += 1
