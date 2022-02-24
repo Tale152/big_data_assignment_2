@@ -8,50 +8,52 @@ import utils.DataLoader.loadSIFTs
 
 import java.util.concurrent.TimeUnit
 
-final case class KMeans(private val sc: SparkContext, private val nCentroids: Int, private val dataPath: String) {
+trait KMeans {
+  protected[kMeans] var initCentroidSelector: (RDD[SiftDescriptorContainer], Int) => Array[SiftDescriptorContainer]
+  protected[kMeans] var mapReduce: (RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer]
+  protected[kMeans] var endCondition: (Int, Array[SiftDescriptorContainer], Array[SiftDescriptorContainer]) => Boolean
 
-  private var initCentroidSelector: Option[(RDD[SiftDescriptorContainer], Int) => Array[SiftDescriptorContainer]] = None
+  def compute() : Unit
+}
 
-  private var mapReduce :Option[(RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer]] = None
+object KMeans {
 
-  private var endCondition: Option[(Int, Array[SiftDescriptorContainer], Array[SiftDescriptorContainer]) => Boolean] = None
+  def apply(sc: SparkContext, nCentroids: Int, dataPath: String): KMeans = KMeansImpl(sc, nCentroids, dataPath)
 
-  def setInitCentroidSelector(ics: (RDD[SiftDescriptorContainer], Int) => Array[SiftDescriptorContainer]): Unit = {
-    initCentroidSelector = Some(ics)
-  }
-  def setMapReduce(mr: (RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer]): Unit = {
-    mapReduce = Some(mr)
-  }
+  private final case class KMeansImpl(sc: SparkContext, nCentroids: Int, dataPath: String) extends KMeans {
 
-  def setEndCondition(ec: (Int, Array[SiftDescriptorContainer], Array[SiftDescriptorContainer]) => Boolean): Unit = {
-    endCondition = Some(ec)
-  }
+    override protected[kMeans] var initCentroidSelector: (RDD[SiftDescriptorContainer], Int) => Array[SiftDescriptorContainer] = _
+    override protected[kMeans] var mapReduce: (RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer] = _
+    override protected[kMeans] var endCondition: (Int, Array[SiftDescriptorContainer], Array[SiftDescriptorContainer]) => Boolean = _
 
-  def compute(): Unit = {
-    val startTime = System.nanoTime()
-    val (result, iterations) = computation()
-    val endTime = System.nanoTime()
+    override def compute(): Unit = {
+      val startTime = System.nanoTime()
+      val (_, iterations) = computation()
+      val endTime = System.nanoTime()
 
-    println("Computation completed in " + iterations + " iterations")
-    println("Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(endTime - startTime) + " ms")
-    //println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
-  }
-
-  private def computation() = {
-    val rdd = loadSIFTs(sc, dataPath)
-    var broadcastCentroids = sc.broadcast(initCentroidSelector.get(rdd, nCentroids))
-    var iterations = 0
-    var result = Array[SiftDescriptorContainer]()
-
-    while(!endCondition.get(iterations, broadcastCentroids.value, result)) {
-      if(iterations > 0){
-        broadcastCentroids = sc.broadcast(result)
-      }
-      result = mapReduce.get(rdd, broadcastCentroids)
-      broadcastCentroids.unpersist
-      println("Iteration number " + iterations + " completed")
-      iterations += 1
+      println("Computation completed in " + iterations + " iterations")
+      println("Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(endTime - startTime) + " ms")
+      //println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
     }
-    (result, iterations)
+
+    private def computation() = {
+      val rdd = loadSIFTs(sc, dataPath)
+      var broadcastCentroids = sc.broadcast(initCentroidSelector(rdd, nCentroids))
+      var iterations = 0
+      var result = Array[SiftDescriptorContainer]()
+
+      while(!endCondition(iterations, broadcastCentroids.value, result)) {
+        if(iterations > 0){
+          broadcastCentroids = sc.broadcast(result)
+        }
+        result = mapReduce(rdd, broadcastCentroids)
+        broadcastCentroids.unpersist
+        println("Iteration number " + iterations + " completed")
+        iterations += 1
+      }
+      (result, iterations)
+    }
+
   }
 }
+

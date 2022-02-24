@@ -9,23 +9,28 @@ import utils.ArgsProvider
 object Computation {
 
   def kMeans(sc: SparkContext): Unit = {
-    val kMeansExecutor = KMeans(sc, ArgsProvider.centroidsNumber, ArgsProvider.dataPath)
+    var kMeansBuilder = KMeansBuilder()
+      .sparkContext(sc)
+      .centroidsNumber(ArgsProvider.centroidsNumber)
+      .dataPath(ArgsProvider.dataPath)
+
     ArgsProvider.centroidSelector match {
-      case "FIRST_N" => kMeansExecutor.setInitCentroidSelector(useFirstN)
-      case "EVENLY_SPACED" => kMeansExecutor.setInitCentroidSelector(useEvenlySpaced)
+      case "FIRST_N" => kMeansBuilder = kMeansBuilder.initCentroidSelector(useFirstN)
+      case "EVENLY_SPACED" => kMeansBuilder = kMeansBuilder.initCentroidSelector(useEvenlySpaced)
       case _ => throw new IllegalArgumentException("The specified centroid selector does not exist")
     }
     ArgsProvider.mapReduce match {
-      case "DEFAULT" => kMeansExecutor.setMapReduce(baseMapReduce)
-      case "EARLY_HALTING" => kMeansExecutor.setMapReduce(earlyHaltingMapReduce)
+      case "DEFAULT" => kMeansBuilder = kMeansBuilder.mapReduce(baseMapReduce)
+      case "EARLY_HALTING" => kMeansBuilder = kMeansBuilder.mapReduce(earlyHaltingMapReduce)
       case _ => throw new IllegalArgumentException("The specified map-reduce does not exist")
     }
     ArgsProvider.endCondition match {
-      case "MAX" => kMeansExecutor.setEndCondition(endByMaxReached)
-      case "SIMILARITY" => kMeansExecutor.setEndCondition(endBySimilarity)
+      case "MAX" => kMeansBuilder = kMeansBuilder.endCondition(endByMaxReached)
+      case "SIMILARITY" => kMeansBuilder = kMeansBuilder.endCondition(endBySimilarity)
       case _ => throw new IllegalArgumentException("The specified end condition does not exist")
     }
-    kMeansExecutor.compute()
+
+    kMeansBuilder.build().compute()
   }
 
   def printConfiguration(): Unit = {
