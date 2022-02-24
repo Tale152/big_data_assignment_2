@@ -2,7 +2,7 @@ package kMeans
 
 import kMeans.versions.EndConditions.{endByMaxReached, endBySimilarity}
 import kMeans.versions.InitCentroidSelectors.{useEvenlySpaced, useFirstN}
-import kMeans.versions.MapReduces.{baseMapReduce, earlyHaltingMapReduce}
+import kMeans.versions.MapReduces.{baseMapReduce, earlyHaltingMapReduce, earlyHaltingUnravelingMapReduce}
 import org.apache.spark.SparkContext
 import utils.ArgsProvider
 
@@ -37,6 +37,7 @@ object Computation {
   private def setMapReduce(kMeansBuilder: KMeansBuilder): KMeansBuilder = ArgsProvider.mapReduce match {
     case "DEFAULT" => kMeansBuilder.mapReduce(baseMapReduce)
     case "EARLY_HALTING" => kMeansBuilder.mapReduce(earlyHaltingMapReduce)
+    case "EARLY_HALTING_UNRAVELING" => kMeansBuilder.mapReduce(earlyHaltingUnravelingMapReduce)
     case _ => throw new IllegalArgumentException("The specified map-reduce does not exist")
   }
 
