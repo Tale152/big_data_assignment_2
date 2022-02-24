@@ -1,7 +1,7 @@
 package kMeans
 
 import kMeans.versions.EndConditions.{endByMaxReached, endBySimilarity}
-import kMeans.versions.InitCentroidSelectors.useFirstN
+import kMeans.versions.InitCentroidSelectors.{useEvenlySpaced, useFirstN}
 import kMeans.versions.MapReduces.{baseMapReduce, earlyHaltingMapReduce}
 import org.apache.spark.SparkContext
 import utils.ArgsProvider
@@ -12,6 +12,7 @@ object Computation {
     val kMeansExecutor = KMeans(sc, ArgsProvider.centroidsNumber, ArgsProvider.dataPath)
     ArgsProvider.centroidSelector match {
       case "FIRST_N" => kMeansExecutor.setInitCentroidSelector(useFirstN)
+      case "EVENLY_SPACED" => kMeansExecutor.setInitCentroidSelector(useEvenlySpaced)
       case _ => throw new IllegalArgumentException("The specified centroid selector does not exist")
     }
     ArgsProvider.mapReduce match {
