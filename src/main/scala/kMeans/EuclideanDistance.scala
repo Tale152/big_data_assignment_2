@@ -3,28 +3,19 @@ package kMeans
 import eCP.Java.SiftDescriptorContainer
 
 object EuclideanDistance {
+
   /* calc. Euclidean dist. between two points */
-  def distance(a: SiftDescriptorContainer, b: SiftDescriptorContainer): Int = {
-    var ret = 0
-    var i = 0
-    while (i < a.vector.length) {
-      val t = a.vector(i) - b.vector(i)
-      ret += t * t
-      i = i + 1
-    }
-    ret
-  }
+  def distance(a: SiftDescriptorContainer, b: SiftDescriptorContainer): Int =
+    (a.vector, b.vector).zipped.map((x,y) => x - y).foldLeft(0)((accumulator,v) => accumulator + (v * v))
 
   def distance(a: SiftDescriptorContainer, b: SiftDescriptorContainer, currMin: Int): Int = {
-    var ret = 0
-    var i = 0
-    while (i < a.vector.length) {
-      val t = a.vector(i) - b.vector(i)
+    var ret: Int = 0
+    for((x,y) <- (a.vector, b.vector).zipped){
+      val t = x - y
       ret += t * t
       if(ret > currMin){
         return Integer.MAX_VALUE
       }
-      i = i + 1
     }
     ret
   }
