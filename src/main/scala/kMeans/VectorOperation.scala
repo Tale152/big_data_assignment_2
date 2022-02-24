@@ -1,7 +1,7 @@
 package kMeans
 
-import eCP.Java.SiftDescriptorContainer
 import kMeans.EuclideanDistance.distance
+import utils.Point
 
 object VectorOperation {
 
@@ -17,7 +17,7 @@ object VectorOperation {
     res
   }
 
-  def similarity(x: Array[SiftDescriptorContainer], y: Array[SiftDescriptorContainer], tolerance: Int): Boolean = {
+  def similarity(x: Array[Point], y: Array[Point], tolerance: Int): Boolean = {
     var i = 0
     x.forall(e => {
       val res = Math.abs(distance(e, y(i))) < tolerance

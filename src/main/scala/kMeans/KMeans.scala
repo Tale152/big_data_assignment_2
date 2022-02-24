@@ -1,17 +1,17 @@
 package kMeans
 
-import eCP.Java.SiftDescriptorContainer
 import org.apache.spark.SparkContext
 import org.apache.spark.broadcast.Broadcast
 import org.apache.spark.rdd.RDD
 import utils.DataLoader.loadSIFTs
+import utils.Point
 
 import java.util.concurrent.TimeUnit
 
 trait KMeans {
-  protected[kMeans] var initCentroidSelector: (RDD[SiftDescriptorContainer], Int) => Array[SiftDescriptorContainer]
-  protected[kMeans] var mapReduce: (RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer]
-  protected[kMeans] var endCondition: (Int, Array[SiftDescriptorContainer], Array[SiftDescriptorContainer]) => Boolean
+  protected[kMeans] var initCentroidSelector: (RDD[Point], Int) => Array[Point]
+  protected[kMeans] var mapReduce: (RDD[Point], Broadcast[Array[Point]]) => Array[Point]
+  protected[kMeans] var endCondition: (Int, Array[Point], Array[Point]) => Boolean
 
   def compute() : Unit
 }
@@ -22,25 +22,16 @@ object KMeans {
 
   private final case class KMeansImpl(sc: SparkContext, nCentroids: Int, dataPath: String) extends KMeans {
 
-    override protected[kMeans] var initCentroidSelector: (RDD[SiftDescriptorContainer], Int) => Array[SiftDescriptorContainer] = _
-    override protected[kMeans] var mapReduce: (RDD[SiftDescriptorContainer], Broadcast[Array[SiftDescriptorContainer]]) => Array[SiftDescriptorContainer] = _
-    override protected[kMeans] var endCondition: (Int, Array[SiftDescriptorContainer], Array[SiftDescriptorContainer]) => Boolean = _
+    override protected[kMeans] var initCentroidSelector: (RDD[Point], Int) => Array[Point] = _
+    override protected[kMeans] var mapReduce: (RDD[Point], Broadcast[Array[Point]]) => Array[Point] = _
+    override protected[kMeans] var endCondition: (Int, Array[Point], Array[Point]) => Boolean = _
 
     override def compute(): Unit = {
-      val startTime = System.nanoTime()
-      val (_, iterations) = computation()
-      val endTime = System.nanoTime()
-
-      println("Computation completed in " + iterations + " iterations")
-      println("Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(endTime - startTime) + " ms")
-      //println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
-    }
-
-    private def computation() = {
       val rdd = loadSIFTs(sc, dataPath)
+      val startTime = System.nanoTime()
       var broadcastCentroids = sc.broadcast(initCentroidSelector(rdd, nCentroids))
       var iterations = 0
-      var result = Array[SiftDescriptorContainer]()
+      var result = Array[Point]()
 
       while(!endCondition(iterations, broadcastCentroids.value, result)) {
         if(iterations > 0){
@@ -51,9 +42,10 @@ object KMeans {
         println("Iteration number " + iterations + " completed")
         iterations += 1
       }
-      (result, iterations)
+      val endTime = System.nanoTime()
+      println("Computation completed in " + iterations + " iterations")
+      println("Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(endTime - startTime) + " ms")
+      //println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
     }
-
   }
 }
-

@@ -1,11 +1,11 @@
 package kMeans
 
-import eCP.Java.SiftDescriptorContainer
+import utils.Point
 
 object EuclideanDistance {
 
   /* calc. Euclidean dist. between two points */
-  def distance(a: SiftDescriptorContainer, b: SiftDescriptorContainer): Int = {
+  def distance(a: Point, b: Point): Int = {
     var ret = 0
     var i = 0
     while (i < a.vector.length) {
@@ -16,7 +16,7 @@ object EuclideanDistance {
     ret
   }
 
-  def distance(a: SiftDescriptorContainer, b: SiftDescriptorContainer, currMin: Int): Int = {
+  def distance(a: Point, b: Point, currMin: Int): Int = {
     var ret = 0
     var i = 0
     while (i < a.vector.length) {
