@@ -43,6 +43,7 @@ object KMeans {
         iterations += 1
       }
       val endTime = System.nanoTime()
+      rdd.unpersist()
       println("Computation completed in " + iterations + " iterations")
       println("Elapsed time: " + TimeUnit.NANOSECONDS.toMillis(endTime - startTime) + " ms")
       //println(result.foreach(r => println(r.vector.mkString("Array(", ", ", ")"))))
