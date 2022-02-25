@@ -16,7 +16,7 @@ The goals can be classified in:
 The setup chosen is the following:
 - java version > **1.8**
 - scala version **2.12.10**
-- sbt version **TODO**
+- sbt version **1.5.5**
 - spark version **3.0.3**
 - hadoop version **2.7.4**
 
@@ -49,7 +49,8 @@ Optional arguments:
 
 ## Versions implemented
 ### Centroids selection (-cs)
-- **first_n**: selects from the beginning of the data Array as many centroids as specified by -cn
+- **first_n**: selects from the beginning of the data Array as many centroids as specified by -cn.
+- **evenly_spaced**: selects a specified number of centroids evenly spaced in the data vector.
 
 ### Map-reduce (-mr)
 - **default**:<br />
@@ -57,11 +58,18 @@ For each point of the Array the Euclidean distance of that point from all the ce
 Then, for each point is going to be returned a tuple which contains the id of the centroid which is the nearest to the point, a counter that is used to find the total number of points in the specific cluster and the actual point.  
 Once that is done, for each centroid is going to be calculated the total number of point in that cluster and the average of all the points. The average is the new cluster centroid that is going to be used for the next iteration of the algorithm.
 - **early_halting**:<br />
-This implementation does the exact same thing as the default one but tries to enhance performances using the early halting technique when calculating the distance between every point and every centroid.
+This implementation does the exact same thing as the default one but it tries to enhance performances using the early halting technique when calculating the distance between every point and every centroid.
+- **early_halting_unraveling**:<br />
+In combination with the early halting, it also reduce the number of loop during the computation of the algorithm, decreasing the computational costs.
 ### End condition (-ec)
 - **max**:<br />
 This version of just continues to compute K-Means until all the iterations are executed, even in the case that a stable version has been already found.
 - **similarity**:<br />
-  If the centroids values are stable respection a specified tolerance. Euclidean distance is used to calculate the distance between the previous iteration centroids and the currents: if the distance is less than the tolerance, then the algorithm can stop and it will return the results. In the unfortunate circumstance that stability is never reached, computation will stop when max iterations are reached.
+If the centroids values are stable respection a specified tolerance. Euclidean distance is used to calculate the distance between the previous iteration centroids and the currents: if the distance is less than the tolerance, then the algorithm can stop and it will return the results. In the unfortunate circumstance that stability is never reached, computation will stop when max iterations are reached.
 
 ## Code structure
+The core of the code is in the package __kMeans__, which contains the actual computational logic of the K-Means clustering algorithm.  
+When running the program, as seen before, there are different options that can be set, which define how the data is actually going to be handled. These can be find in the __versions__ package: the objects present are **InitCentroidSelectors**, **MapReduces** and **EndConditions**, and in each of them there is the implementation of different versions to get the result.  
+The **KMeans** object defines the logic structure of the algorithm; in order to create the object easily there is the **KMeansBuilder**, in which are set also the algorithm options taken as input.  
+
+The other package is __utilis__, in which there are utility objects used for example to handle arguments, to upload the data file or to create the SparkContext correctly.
