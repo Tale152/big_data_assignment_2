@@ -18,5 +18,5 @@ object DataLoader {
    */
   def loadSIFTs(sc: SparkContext, fileName: String): RDD[Point] = sc
       .sequenceFile(fileName, classOf[IntWritable], classOf[BytesWritable]) //data is serialized as (IntWritable, BytesWritable)
-      .map(it => Point(it._1.get(), it._2.copyBytes())) //deep-copying data
+      .map(it => Point(it._1.get(), it._2.copyBytes())) //deep-copying data into a new Point
 }
