@@ -64,7 +64,7 @@ object ArgsProvider{
   }
 
   /**
-   * @return the path (inside the spark master's filesystem) where the .seq file is stored
+   * @return the path where the .seq file is stored
    */
   def dataPath: String = {
     val occurrences = countArgs(Regex.DATA)
