@@ -5,7 +5,7 @@ import utils.Point
 
 /**
  * Object that contains various implementation for the init centroid selector strategy to provide to
- * [[kMeans.KMeansBuilder]] as argument in the [[kMeans.KMeansBuilder.initCentroidSelector()]] method.
+ * [[kMeans.KMeansBuilder]] as argument in the [[kMeans.KMeansBuilder.initCentroidSelector]] method.
  */
 object InitCentroidSelectors {
 
