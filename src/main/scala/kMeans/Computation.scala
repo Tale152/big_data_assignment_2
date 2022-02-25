@@ -6,8 +6,15 @@ import kMeans.versions.MapReduces.{baseMapReduce, earlyHaltingMapReduce, earlyHa
 import org.apache.spark.SparkContext
 import utils.ArgsProvider
 
+/**
+ * Utility object used by the Main.
+ */
 object Computation {
 
+  /**
+   * Builds [[KMeans]] and launches the computation.
+   * @param sc SparkContext that will be used by [[KMeans]]
+   */
   def kMeans(sc: SparkContext): Unit = {
     var kMeansBuilder = KMeansBuilder()
       .sparkContext(sc)
@@ -18,6 +25,9 @@ object Computation {
     kMeansBuilder.build().compute()
   }
 
+  /**
+   * Prints the configuration provided in the Main's arguments.
+   */
   def printConfiguration(): Unit = {
     println("==========================")
     println("Running K-Means with:\n")
