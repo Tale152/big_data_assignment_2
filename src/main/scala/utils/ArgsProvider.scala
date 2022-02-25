@@ -2,6 +2,9 @@ package utils
 
 import java.io.File
 
+/**
+ * List of all flags that can be passed as argument.
+ */
 private object Flags{
   val SPARK_LOG: String = "-sl"
   val MASTER: String = "-m"
@@ -12,6 +15,9 @@ private object Flags{
   val CENTROIDS_NUMBER: String = "-cn"
 }
 
+/**
+ * List of regex used to associate strings to a particular Flag.
+ */
 private object Regex{
   val MASTER: String = Flags.MASTER + "=spark://(.*)"
   val DATA: String = Flags.DATA + "=(.*).seq"
@@ -21,14 +27,24 @@ private object Regex{
   val CENTROIDS_NUMBER: String = Flags.CENTROIDS_NUMBER + "=(.*)"
 }
 
+/**
+ * Object that follows Singleton pattern to access arguments provided to main in a safe way.
+ */
 object ArgsProvider{
 
   private var args: Array[String] = Array[String]()
 
+  /**
+   * Needs to be called at least once before using the other methods in order to setup the args source.
+   * @param args provided to the main
+   */
   def setArgs(args: Array[String]): Unit = {
     this.args = args
   }
 
+  /**
+   * @return a Boolean that indicates whether or not activate Spark logs.
+   */
   def logFlag: Boolean = {
     val occurrences = countArgs(Flags.SPARK_LOG)
     if (occurrences > 1){
@@ -37,6 +53,9 @@ object ArgsProvider{
     occurrences == 1
   }
 
+  /**
+   * @return the address of the Spark master
+   */
   def sparkMaster: String = {
     val occurrences = countArgs(Regex.MASTER)
     throwIf(occurrences == 0, "No spark master provided")
@@ -44,6 +63,9 @@ object ArgsProvider{
     getArg(Regex.MASTER, Flags.MASTER)
   }
 
+  /**
+   * @return the path (inside the spark master's filesystem) where the .seq file is stored
+   */
   def dataPath: String = {
     val occurrences = countArgs(Regex.DATA)
     throwIf(occurrences == 0, "No .seq file provided")
@@ -53,6 +75,9 @@ object ArgsProvider{
     path
   }
 
+  /**
+   * @return the number ok centroids to use in the computation
+   */
   def centroidsNumber: Int = {
     val occurrences = countArgs(Regex.CENTROIDS_NUMBER)
     if(occurrences == 0){
@@ -67,10 +92,19 @@ object ArgsProvider{
     }
   }
 
+  /**
+   * @return a string that specifies what centroid selector to use in the computation
+   */
   def centroidSelector: String = selectionWithDefault(Regex.CENTROIDS_SELECTOR, Flags.CENTROIDS_SELECTOR, "FIRST_N")
 
+  /**
+   * @return a string that specifies what end condition to use in the computation
+   */
   def endCondition: String = selectionWithDefault(Regex.END_CONDITION, Flags.END_CONDITION, "MAX")
 
+  /**
+   * @return a string that specifies what map-reduce algorithm to use in the computation
+   */
   def mapReduce: String = selectionWithDefault(Regex.MAP_REDUCE, Flags.MAP_REDUCE, "DEFAULT")
 
   private def selectionWithDefault(regex: String, flag: String, default: String): String = {
