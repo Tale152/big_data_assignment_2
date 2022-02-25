@@ -10,7 +10,7 @@ import org.apache.spark.rdd.RDD
 object DataLoader {
 
   /**
-   * This function is specificly designed to load a file of SIFT descriptors into an RDD.
+   * This function is specifically designed to load a file of SIFT descriptors into an RDD.
    *
    * @param sc SparkContext of the master node.
    * @param fileName path to the file of SIFT descriptors.
