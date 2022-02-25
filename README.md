@@ -20,7 +20,7 @@ The setup chosen is the following:
 - Spark version = **3.0.3**
 - Hadoop version = **2.7.4**
 
-See the [Support material](#Support material) section for downloading a Virtual Machine with everything needed already installed.
+See the [Support material](#support-material) section for downloading a Virtual Machine with everything needed already installed.
 
 It's also probable that changing the dependencies in the build.sbt files it's possible to use other versions of Java, Scala and Spark, but no tests were conducted regarding this.
 
@@ -42,7 +42,7 @@ sbt "run -m=<SPARK MASTER IP> -d=<FILE PATH> -cs=<CENTROIDS SELECTOR> -cn=<CENTR
 
 Mandatory arguments:  
 - **-m** is the spark master ip address, which is currently running (including the spark:// prefix).
-- **-d** is the file path that is going to be used to perform K-Means clustering: it must be a .seq file (see the [Support material](#Support material) section for downloading the .seq files).
+- **-d** is the file path that is going to be used to perform K-Means clustering: it must be a .seq file (see the [Support material](#support-material) section for downloading the .seq files).
 
 Optional arguments:  
 - **-cs** determines how the centroids will be chosen. If omitted "first_n" is used.
@@ -85,7 +85,7 @@ Four tests were conducted a Spark standalone cluster that runs locally on a sing
 3. Changing number of centroids (-cn argument).
 4. Changing data size (from the three .seq files).
 
-More details and results can be read in the **technical report** available in the [Support material](#Support material) section.
+More details and results can be read in the **technical report** available in the [Support material](#support-material) section.
 
 ## Support material
 In the [release section](https://github.com/Tale152/big_data_assignment_2/releases) of this repository, along the source code, it's possible to download:
