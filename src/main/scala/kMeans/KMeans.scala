@@ -58,7 +58,7 @@ object KMeans {
     override protected[kMeans] var endCondition: (Int, Array[Point], Array[Point]) => Boolean = _
 
     override def compute(): Unit = {
-      val rdd = loadSIFTs(sc, dataPath)
+      val rdd = loadSIFTs(sc, dataPath).persist()
       val startTime = System.nanoTime()
       var broadcastCentroids = sc.broadcast(initCentroidSelector(rdd, nCentroids)) //broadcasting centroids to workers
       var iterations = 0
