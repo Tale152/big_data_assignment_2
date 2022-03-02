@@ -14,6 +14,10 @@ object ContextFactory {
      * @return the newly created [[SparkContext]]
      */
     def create(appName: String, masterAddress: String, jarPath: String): SparkContext = new SparkContext(
-        new SparkConf().setAppName(appName).setMaster(masterAddress).setJars(Seq(jarPath))
+        new SparkConf()
+          .setAppName(appName)
+          .setMaster(masterAddress)
+          .setJars(Seq(jarPath))
+          .set("spark.driver.maxResultSize", "2g")
     )
 }
