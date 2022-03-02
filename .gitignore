@@ -303,6 +303,7 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,visualstudiocode,intellij,spark,java,scala
 
-project
+project/project
+project/target
 .bsp
 *.seq
