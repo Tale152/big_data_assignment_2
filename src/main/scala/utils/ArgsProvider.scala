@@ -9,6 +9,7 @@ private object Flags{
   val SPARK_LOG: String = "-sl"
   val MASTER: String = "-m"
   val DATA: String = "-d"
+  val JAR: String = "-j"
   val MAP_REDUCE: String = "-mr"
   val END_CONDITION: String = "-ec"
   val CENTROIDS_SELECTOR: String = "-cs"
@@ -21,6 +22,7 @@ private object Flags{
 private object Regex{
   val MASTER: String = Flags.MASTER + "=(.*)"
   val DATA: String = Flags.DATA + "=(.*).seq"
+  val JAR: String = Flags.JAR + "=(.*).jar"
   val MAP_REDUCE: String = Flags.MAP_REDUCE + "=(.*)"
   val END_CONDITION: String = Flags.END_CONDITION + "=(.*)"
   val CENTROIDS_SELECTOR: String = Flags.CENTROIDS_SELECTOR + "=(.*)"
@@ -71,6 +73,18 @@ object ArgsProvider{
     throwIf(occurrences == 0, "No .seq file provided")
     throwIf(occurrences > 1, "More than one .seq file provided")
     val path = getArg(Regex.DATA, Flags.DATA)
+    throwIf(!fileExists(path), path + " file does not exist")
+    path
+  }
+
+  /**
+   * @return the path where the supporting jar file is stored
+   */
+  def jarPath: String = {
+    val occurrences = countArgs(Regex.JAR)
+    throwIf(occurrences == 0, "No .jar file provided")
+    throwIf(occurrences > 1, "More than one .jar file provided")
+    val path = getArg(Regex.JAR, Flags.JAR)
     throwIf(!fileExists(path), path + " file does not exist")
     path
   }

@@ -9,7 +9,7 @@ object Main {
       ArgsProvider.setArgs(args)
       logSelectedOption(ArgsProvider.logFlag)
       printConfiguration()
-      val sc = ContextFactory.create(Const.appName, ArgsProvider.sparkMaster, Const.jarPath)
+      val sc = ContextFactory.create(Const.appName, ArgsProvider.sparkMaster, ArgsProvider.jarPath)
       kMeans(sc)
       sc.stop()
     }
