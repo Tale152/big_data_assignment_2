@@ -19,7 +19,7 @@ private object Flags{
  * List of regex used to associate strings to a particular Flag.
  */
 private object Regex{
-  val MASTER: String = Flags.MASTER + "=spark://(.*)"
+  val MASTER: String = Flags.MASTER + "=(.*)"
   val DATA: String = Flags.DATA + "=(.*).seq"
   val MAP_REDUCE: String = Flags.MAP_REDUCE + "=(.*)"
   val END_CONDITION: String = Flags.END_CONDITION + "=(.*)"
