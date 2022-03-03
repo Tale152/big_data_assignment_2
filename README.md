@@ -1,5 +1,5 @@
 # BIG DATA MANAGEMENT - Assignment 2
-[This repository](https://github.com/Tale152/big_data_assignment_2) contains an assignment for the course of Big Data Management (T-764-DATA) taken in Reykjavik University during the Spring semester 2022.  
+[This repository](https://github.com/Tale152/scala_spark_k_means_clustering) contains an assignment for the course of Big Data Management (T-764-DATA) taken in Reykjavik University during the Spring semester 2022.  
 This project is developed by: [Alessandro Talmi](https://github.com/Tale152) and [Elisa Tronetti](https://github.com/ElisaTronetti).
 
 ## Main Goal
@@ -121,7 +121,7 @@ Four tests were conducted a Spark standalone cluster that runs locally on a sing
 More details and results can be read in the **technical report** available in the [Support material](#support-material) section.
 
 ## Support material
-In the [release section](https://github.com/Tale152/big_data_assignment_2/releases) of this repository, along the source code, it's possible to download:
+In the [release section](https://github.com/Tale152/scala_spark_k_means_clustering/releases) of this repository, along the source code, it's possible to download:
 - **app-assembly-1.0.jar**:<br />
 Standalone jar described in the [how to run](#how-to-run) section.
 - **app_2.12-1.0.jar**:<br />
